@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/gato_provider.dart';
-import '../models/gato.dart';
+import 'providers/pokemon_provider.dart';
+import 'models/pokemon.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,50 +14,50 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => GatoProvider()),
+        ChangeNotifierProvider(create: (_) => PokemonProvider()),
       ],
       child: const MaterialApp(
-        title: 'Flutter Gato API Demo',
-        home: GatoListScreen(),
+        title: 'Flutter PokeAPI Demo',
+        home: PokemonListScreen(),
       ),
     );
   }
 }
 
-class GatoListScreen extends StatelessWidget {
-  const GatoListScreen({super.key});
+class PokemonListScreen extends StatelessWidget {
+  const PokemonListScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gato List'),
+        title: const Text('Pokémon List'),
       ),
-      body: Consumer<GatoProvider>(
+      body: Consumer<PokemonProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
           return ListView.builder(
-            itemCount: provider.gatoList.length,
+            itemCount: provider.pokemonList.length,
             itemBuilder: (context, index) {
-              Gato gato = provider.gatoList[index];
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.network(gato.imageUrl),
-                  Container(
-                    color: Colors.black54,
-                    child: Text(
-                      gato.statusCode.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+              Pokemon pokemon = provider.pokemonList[index];
+              return Column(
+                children: <Widget>[
+                  SizedBox(height: 16), // Espacio superior
+                  Text(
+                    pokemon.name,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
+                  SizedBox(height: 10), // Espacio entre el nombre y el sprite
+                  Image.network(
+                    pokemon.spriteUrl,
+                    width: 100,
+                    height: 100,
+                  ),
+                  SizedBox(height: 36), // Espacio inferior
+                  Divider(), // Línea divisoria opcional
                 ],
               );
             },
@@ -66,75 +66,10 @@ class GatoListScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Provider.of<GatoProvider>(context, listen: false).fetchgato();
+          Provider.of<PokemonProvider>(context, listen: false).fetchPokemon();
         },
         child: const Icon(Icons.refresh),
       ),
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'providers/pokemon_provider.dart';
-// import 'models/pokemon.dart';
-
-// void main() {
-//   runApp(const MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MultiProvider(
-//       providers: [
-//         ChangeNotifierProvider(create: (_) => PokemonProvider()),
-//       ],
-//       child: const MaterialApp(
-//         title: 'Flutter PokeAPI Demo',
-//         home: PokemonListScreen(),
-//       ),
-//     );
-//   }
-// }
-
-// class PokemonListScreen extends StatelessWidget {
-//   const PokemonListScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Pokémon List'),
-//       ),
-//       body: Consumer<PokemonProvider>(
-//         builder: (context, provider, child) {
-//           if (provider.isLoading) {
-//             return const Center(child: CircularProgressIndicator());
-//           }
-
-//           return ListView.builder(
-//             itemCount: provider.pokemonList.length,
-//             itemBuilder: (context, index) {
-//               Pokemon pokemon = provider.pokemonList[index];
-//               return ListTile(
-//                 title: Text(pokemon.name),
-//                 onTap: () {
-//                   // Puedes agregar una navegación a un detalle de Pokémon aquí
-//                 },
-//               );
-//             },
-//           );
-//         },
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: () {
-//           Provider.of<PokemonProvider>(context, listen: false).fetchPokemon();
-//         },
-//         child: const Icon(Icons.refresh),
-//       ),
-//     );
-//   }
-// }
